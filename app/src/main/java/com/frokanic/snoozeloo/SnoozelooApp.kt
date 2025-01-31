@@ -1,4 +1,4 @@
-package com.frokanic.snoozeloo.di
+package com.frokanic.snoozeloo
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
