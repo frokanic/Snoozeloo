@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Snoozeloo.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/snoozeloo_blue</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/snoozeloo_blue</item>
+        <item name="postSplashScreenTheme">@style/Theme.Snoozeloo</item>
+    </style>
+</resources>
