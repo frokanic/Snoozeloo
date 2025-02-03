@@ -1,5 +1,9 @@
 package com.frokanic.snoozeloo
 
+import android.app.AlarmManager
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Window
 import androidx.activity.ComponentActivity
@@ -10,6 +14,7 @@ import androidx.core.view.WindowInsetsControllerCompat
 import com.frokanic.snoozeloo.navigation.AppNavigation
 import com.frokanic.snoozeloo.theme.SnoozelooTheme
 import dagger.hilt.android.AndroidEntryPoint
+import android.provider.Settings
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -27,10 +32,23 @@ class MainActivity : ComponentActivity() {
 //        insetsController.isAppearanceLightStatusBars = true
 
 //        enableEdgeToEdge()
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//            if (!alarmManager.canScheduleExactAlarms()) {
+//                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+//                startActivity(intent)
+//            }
+//        }
+
         setContent {
             SnoozelooTheme {
                 AppNavigation()
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
     }
 }
