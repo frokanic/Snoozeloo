@@ -14,6 +14,10 @@
 .cxx
 local.properties
 
+.idea/
+.kotlinc/
+.kotlin/
+
 # Project exclude paths
 /core/common/build/
 /core/data/build/
