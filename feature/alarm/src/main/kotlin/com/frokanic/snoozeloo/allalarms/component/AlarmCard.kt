@@ -1,7 +1,6 @@
 package com.frokanic.snoozeloo.allalarms.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,13 +66,17 @@ fun AlarmCard(
             ) {
                 Text(
                     modifier = Modifier
+                        .weight(1f)
                         .padding(
-                            bottom = 10.dp
+                            bottom = 10.dp,
+                            end = 16.dp
                         ),
                     text = name
                         .orEmpty(),
                     color = Faded_Black,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Switch(
@@ -150,6 +154,22 @@ private fun AlarmCardInactivePreview() {
         period = DayPeriod.AM,
         alarmInTime = "1h 30min",
         isActive = false,
+        onUpdateActiveStatus = {  },
+        onAlarmClick = {  },
+        onDeleteAlarm = {  }
+    )
+}
+
+@Preview
+@Composable
+private fun AlarmCardLongNamePreview() {
+    AlarmCard(
+        id = 1,
+        name = "Wake Up Wake Up Wake Up Wake Up Wake Up Wake Up Wake Up Wake Up",
+        time = "10:00",
+        period = DayPeriod.AM,
+        alarmInTime = "1h 30min",
+        isActive = true,
         onUpdateActiveStatus = {  },
         onAlarmClick = {  },
         onDeleteAlarm = {  }
