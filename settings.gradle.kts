@@ -33,3 +33,4 @@ include(":core:system")
 
 include(":feature")
 include(":feature:alarm")
+include(":feature:ringing")

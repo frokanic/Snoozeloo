@@ -17,9 +17,11 @@ class AlarmSchedulerImpl(
 ) : AlarmScheduler {
 
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
+    private val alarmAction = "com.frokanic.snoozeloo.ACTION_MY_ALARM"
 
     override fun schedule(item: SystemAlarm) {
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
+        val intent = Intent(alarmAction).apply {
+            `package` = context.packageName
             putExtra("TIME", item.timeString)
             putExtra("NAME", item.name)
         }
@@ -40,14 +42,28 @@ class AlarmSchedulerImpl(
     }
 
     override fun cancel(item: SystemAlarm) {
-        alarmManager.cancel(
-            PendingIntent.getBroadcast(
-                context,
-                item.hashCode(),
-                Intent(context, AlarmReceiver::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
+//        alarmManager.cancel(
+//            PendingIntent.getBroadcast(
+//                context,
+//                item.hashCode(),
+//                Intent(context, com.frokanic.snoozeloo.AlarmReceiver::class.java),
+//                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+//            )
+//        )
+        val intent = Intent(alarmAction).apply {
+            `package` = context.packageName
+            putExtra("TIME", item.timeString)
+            putExtra("NAME", item.name)
+        }
+
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            item.hashCode(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
+        alarmManager.cancel(pendingIntent)
     }
 
 }

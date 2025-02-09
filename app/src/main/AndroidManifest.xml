@@ -21,6 +21,7 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Snoozeloo.Splash">
@@ -31,7 +32,28 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".alarm.AlarmReceiver" />
+        <activity
+            android:name="snoozeloo.AlarmRingingActivity"
+            android:launchMode="singleTop"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="myapp"
+                    android:host="alarm"
+                    android:path="/ringing" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="snoozeloo.AlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.frokanic.snoozeloo.ACTION_MY_ALARM" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
