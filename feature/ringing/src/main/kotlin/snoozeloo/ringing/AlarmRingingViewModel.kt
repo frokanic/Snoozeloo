@@ -1,5 +1,6 @@
-package com.frokanic.snoozeloo.ringing
+package snoozeloo.ringing
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.frokanic.snoozeloo.repository.SystemAlarmRepository
@@ -9,12 +10,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import snoozeloo.ringing.AlarmRingingEvent
+import snoozeloo.ringing.AlarmRingingUiData
 import javax.inject.Inject
 
 @HiltViewModel
 class AlarmRingingViewModel @Inject constructor(
     private val systemAlarmRepository: SystemAlarmRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    private var alarmId: Int? = savedStateHandle["id"]
 
      private val _uiState = MutableStateFlow(AlarmRingingUiData())
      val uiState = _uiState.asStateFlow()
@@ -29,8 +35,12 @@ class AlarmRingingViewModel @Inject constructor(
          }
      }
 
-    private fun initializeRinging() {
+    init {
+        onAction(AlarmRingingEvent.Ring)
+    }
 
+    private fun initializeRinging() {
+//        systemAlarmRepository.cancelAlarm()
     }
 
     private fun turnOff() {

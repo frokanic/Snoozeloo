@@ -1,4 +1,4 @@
-package com.frokanic.snoozeloo.ringing
+package snoozeloo.ringing
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,19 +29,30 @@ import com.frokanic.snoozeloo.theme.Snoozeloo_Blue
 
 @Composable
 internal fun AlarmRingingScreen(
-    viewModel: AlarmRingingViewModel = hiltViewModel()
+    viewModel: AlarmRingingViewModel = hiltViewModel(),
+    time: String,
+    name: String?,
+    onCloseAlarmRingingScreen: () -> Unit
 ) {
-    val state = viewModel.uiState.collectAsStateWithLifecycle().value
+    LaunchedEffect(key1 = Unit) {
+        viewModel.uiEvent.collect { event ->
+            if (event is AlarmRingingEvent.TurnOff) {
+                onCloseAlarmRingingScreen()
+            }
+        }
+    }
 
     AlarmRingingScreen(
-        state = state,
+        time = time,
+        name = name,
         onAction = viewModel::onAction,
     )
 }
 
 @Composable
 private fun AlarmRingingScreen(
-    state: AlarmRingingUiData,
+    time: String,
+    name: String?,
     onAction: (AlarmRingingEvent) -> Unit
 ) {
     Column(
@@ -66,7 +78,7 @@ private fun AlarmRingingScreen(
         )
 
         Text(
-            text = state.alarmData.time.orEmpty(),
+            text = time,
             fontSize = 82.sp,
             color = Snoozeloo_Blue,
         )
@@ -77,7 +89,7 @@ private fun AlarmRingingScreen(
         )
 
         Text(
-            text = state.alarmData.name.orEmpty(),
+            text = name.orEmpty(),
             fontSize = 24.sp,
             color = Faded_Black,
         )
@@ -107,13 +119,8 @@ private fun AlarmRingingScreen(
 @Composable
 private fun AlarmRingingScreenPreview() {
     AlarmRingingScreen(
-        state = AlarmRingingUiData(
-            loading = false,
-            alarmData = AlarmData(
-                time = "10:00",
-                name = "Work"
-            )
-        ),
+        time = "10:00",
+        name = "Work",
         onAction = {  }
     )
 }

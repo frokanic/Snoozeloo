@@ -1,4 +1,4 @@
-package com.frokanic.snoozeloo.ringing
+package snoozeloo.ringing
 
 sealed interface AlarmRingingEvent {
 
