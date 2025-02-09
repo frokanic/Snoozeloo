@@ -27,7 +27,7 @@ class AlarmDetailsViewModel @Inject constructor(
     private val alarmsRepository: AlarmsRepository,
     private val systemAlarmRepository: SystemAlarmRepository,
     private val countDownTimer: CountDownTimerUseCase,
-    savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private var alarmId: Int? = savedStateHandle["id"]
@@ -241,9 +241,9 @@ class AlarmDetailsViewModel @Inject constructor(
 
             if (save) {
                 if (hour != null && minute != null) {
-                    cancelSystemAlarm(
-                        hour = hour,
-                        minute = minute,
+                    setSystemAlarm(
+                        hours = hour,
+                        minutes = minute,
                         timeStamp = Pair(
                             hour,
                             minute
@@ -258,9 +258,9 @@ class AlarmDetailsViewModel @Inject constructor(
                     )
 
                 if (oldAlarm != null) {
-                    cancelSystemAlarm(
-                        hour = oldAlarm.desiredTimeHour,
-                        minute = oldAlarm.desiredTimeMinute,
+                    setSystemAlarm(
+                        hours = oldAlarm.desiredTimeHour,
+                        minutes = oldAlarm.desiredTimeMinute,
                         timeStamp = Pair(
                             oldAlarm.desiredTimeHour,
                             oldAlarm.desiredTimeMinute
