@@ -21,9 +21,11 @@ interface AlarmsRepository {
         timeStamp: LocalDateTime,
         name: String?,
         isActive: Boolean,
-    )
+    ): Int
 
     suspend fun updateActiveStatus(alarmId: Int)
+
+    suspend fun updateTimeStamp(id: Int, timeStamp: LocalDateTime)
 
     suspend fun deleteAlarm(alarmId: Int)
 }
@@ -50,7 +52,7 @@ class AlarmsRepositoryImpl(
         timeStamp: LocalDateTime,
         name: String?,
         isActive: Boolean,
-    ) {
+    ): Int {
         val alarm = AlarmEntity(
             id = id,
             desiredTimeHour = desiredTimeHour,
@@ -60,11 +62,15 @@ class AlarmsRepositoryImpl(
             isActive = isActive
         )
 
-        dao.saveAlarm(alarm = alarm)
+        return dao.saveAlarm(alarm).toInt()
     }
 
     override suspend fun updateActiveStatus(alarmId: Int) {
         dao.updateActiveStatus(alarmId)
+    }
+
+    override suspend fun updateTimeStamp(id: Int, timeStamp: LocalDateTime) {
+        dao.updateTimeStamp(id, timeStamp)
     }
 
     override suspend fun deleteAlarm(alarmId: Int) {
