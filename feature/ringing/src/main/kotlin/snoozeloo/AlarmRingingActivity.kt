@@ -2,7 +2,6 @@ package snoozeloo
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.frokanic.snoozeloo.theme.SnoozelooTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.Serializable
 import snoozeloo.ringing.AlarmRingingScreen
 
 @AndroidEntryPoint
@@ -23,10 +23,7 @@ class AlarmRingingActivity : ComponentActivity() {
         window.requestFeature(Window.FEATURE_NO_TITLE)
         enableEdgeToEdge()
 
-        val alarmTime = intent.getStringExtra("TIME") ?: ""
-        val alarmName = intent.getStringExtra("NAME")
-
-        Log.d("Debugging", "The alarmTime is $alarmTime and the alarmName is $alarmName")
+        val id = intent.getIntExtra("ID", -1)
 
         setContent {
             SnoozelooTheme {
@@ -34,13 +31,10 @@ class AlarmRingingActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = "ringing"
+                    startDestination = AlarmRinging(id = id)
                 ) {
-                    composable("ringing") {
-                        // Pass alarmTime and alarmName if your screen needs them.
+                    composable<AlarmRinging> {
                         AlarmRingingScreen(
-                            time = alarmTime,
-                            name = alarmName,
                             onCloseAlarmRingingScreen = {
                                 finish()
                             }
@@ -59,3 +53,8 @@ class AlarmRingingActivity : ComponentActivity() {
         super.onSaveInstanceState(outState)
     }
 }
+
+@Serializable
+data class AlarmRinging(
+    val id: Int?
+)
