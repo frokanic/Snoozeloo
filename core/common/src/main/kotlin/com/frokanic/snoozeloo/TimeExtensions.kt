@@ -26,14 +26,20 @@ fun Pair<Int?, Int?>.updateTime(): Pair<Int, Int>? {
     return Pair(hoursUntil, minutesUntil)
 }
 
-fun Pair<Int, Int>?.formatTimeForUi(): String? =
-    if (this != null) {
-        val hoursText = if (this.first > 0) "${this.first}h " else ""
-        val minuteText = if (this.second > 0) "${this.second}m" else ""
-        "Alarm in $hoursText$minuteText".trim()
-    } else {
-        null
-    }
+fun Pair<Int, Int>?.formatTimeForUi(): String {
+    if (this == null) return "No alarm set"
+
+    val (hours, minutes) = this
+    val hoursText = if (hours > 0) "${hours}h" else ""
+    val minuteText = if (minutes > 0) "${minutes}m" else ""
+
+    return when {
+        hours == 0 && minutes == 0 -> "Alarm now"
+        hours == 0 && minutes > 0 -> "Alarm in $minuteText"
+        hours > 0 && minutes == 0 -> "Alarm in $hoursText"
+        else -> "Alarm in $hoursText $minuteText"
+    }.trim()
+}
 
 fun Pair<Int, Int>.toFormattedTimePair(): Pair<String, DayPeriod> {
     val (hour, minute) = this
