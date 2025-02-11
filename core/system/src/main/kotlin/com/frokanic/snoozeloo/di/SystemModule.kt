@@ -3,6 +3,10 @@ package com.frokanic.snoozeloo.di
 import android.content.Context
 import com.frokanic.snoozeloo.alarm.AlarmScheduler
 import com.frokanic.snoozeloo.alarm.AlarmSchedulerImpl
+import com.frokanic.snoozeloo.ringtone.RingtonePlayer
+import com.frokanic.snoozeloo.ringtone.RingtonePlayerImpl
+import com.frokanic.snoozeloo.vibration.VibrationManager
+import com.frokanic.snoozeloo.vibration.VibrationManagerImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,5 +24,21 @@ object SystemModule {
             AlarmSchedulerImpl(
                 context = context
             )
+
+    @Provides
+    fun provideRingtonePlayer(
+        @ApplicationContext context: Context
+    ): RingtonePlayer =
+        RingtonePlayerImpl(
+            context = context
+        )
+
+    @Provides
+    fun provideVibrationManager(
+        @ApplicationContext context: Context
+    ): VibrationManager =
+        VibrationManagerImpl(
+            context = context
+        )
 
 }
