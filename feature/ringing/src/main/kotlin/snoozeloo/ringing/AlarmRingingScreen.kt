@@ -30,10 +30,10 @@ import com.frokanic.snoozeloo.theme.Snoozeloo_Blue
 @Composable
 internal fun AlarmRingingScreen(
     viewModel: AlarmRingingViewModel = hiltViewModel(),
-    time: String,
-    name: String?,
     onCloseAlarmRingingScreen: () -> Unit
 ) {
+    val state = viewModel.uiState.collectAsStateWithLifecycle().value
+
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { event ->
             if (event is AlarmRingingEvent.TurnOff) {
@@ -43,75 +43,75 @@ internal fun AlarmRingingScreen(
     }
 
     AlarmRingingScreen(
-        time = time,
-        name = name,
+        state = state,
         onAction = viewModel::onAction,
     )
 }
 
 @Composable
 private fun AlarmRingingScreen(
-    time: String,
-    name: String?,
+    state: AlarmRingingUiData,
     onAction: (AlarmRingingEvent) -> Unit
 ) {
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(
-                color = Color.White
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Image(
-            imageVector = ImageVector
-                .vectorResource(
-                    id = R.drawable.ic_alarm
+    if (!state.loading) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .background(
+                    color = Color.White
                 ),
-            contentDescription = null
-        )
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                imageVector = ImageVector
+                    .vectorResource(
+                        id = R.drawable.ic_alarm
+                    ),
+                contentDescription = null
+            )
 
-        Spacer(
-            modifier = Modifier
-                .size(16.dp)
-        )
+            Spacer(
+                modifier = Modifier
+                    .size(16.dp)
+            )
 
-        Text(
-            text = time,
-            fontSize = 82.sp,
-            color = Snoozeloo_Blue,
-        )
+            Text(
+                text = state.alarmData.time.orEmpty(),
+                fontSize = 82.sp,
+                color = Snoozeloo_Blue,
+            )
 
-        Spacer(
-            modifier = Modifier
-                .size(16.dp)
-        )
+            Spacer(
+                modifier = Modifier
+                    .size(16.dp)
+            )
 
-        Text(
-            text = name.orEmpty(),
-            fontSize = 24.sp,
-            color = Faded_Black,
-        )
+            Text(
+                text = state.alarmData.name.orEmpty(),
+                fontSize = 24.sp,
+                color = Faded_Black,
+            )
 
-        Spacer(
-            modifier = Modifier
-                .size(16.dp)
-        )
+            Spacer(
+                modifier = Modifier
+                    .size(16.dp)
+            )
 
-        SnoozelooActionButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 84.dp
-                ),
-            enabled = true,
-            text = "Turn Off",
-            largeText = true,
-            onClick = {
-                onAction(AlarmRingingEvent.TurnOff)
-            }
-        )
+            SnoozelooActionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 84.dp
+                    ),
+                enabled = true,
+                text = "Turn Off",
+                largeText = true,
+                onClick = {
+                    onAction(AlarmRingingEvent.TurnOff)
+                }
+            )
+        }
     }
 }
 
@@ -119,8 +119,13 @@ private fun AlarmRingingScreen(
 @Composable
 private fun AlarmRingingScreenPreview() {
     AlarmRingingScreen(
-        time = "10:00",
-        name = "Work",
+        state = AlarmRingingUiData(
+            loading = false,
+            alarmData = AlarmData(
+                time = "10:00",
+                name = "Work"
+            )
+        ),
         onAction = {  }
     )
 }

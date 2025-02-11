@@ -8,13 +8,12 @@ import android.util.Log
 class AlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
+        val id = intent?.getIntExtra("ID", -1)
 
-        val time = intent?.getStringExtra("TIME")
-        val name = intent?.getStringExtra("NAME")
+        Log.d("AlarmReceiver", "The id is $id")
 
         val ringingIntent = Intent(context, AlarmRingingActivity::class.java).apply {
-            putExtra("TIME", time)
-            putExtra("NAME", name)
+            putExtra("ID", id)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context?.startActivity(ringingIntent)
