@@ -98,15 +98,28 @@ class AlarmDetailsViewModel @Inject constructor(
                     hoursInputted = hoursInputted ?: current.alarmDetails.hoursInputted,
                     minutes = minutes ?: current.alarmDetails.minutes,
                     minutesInputted = minutesInputted ?: current.alarmDetails.minutesInputted,
-                    timeTillNextAlarm = if (!current.alarmDetails.hoursInputted || !current.alarmDetails.hoursInputted)
-                        null
-                    else
-                        timeTillNextAlarm ?: current.alarmDetails.timeTillNextAlarm,
+                    timeTillNextAlarm = timeTillNextAlarm ?: updateTime(hours, minutes),
                     displayNameDialog = displayNameDialog ?: current.alarmDetails.displayNameDialog,
                     name = name ?: current.alarmDetails.name
                 )
             )
         }
+    }
+
+    private fun updateTime(hours: Int?, minutes: Int?): String? {
+        val currentHours = _uiState.value.alarmDetails.hours
+        val currentMinutes = _uiState.value.alarmDetails.minutes
+
+        if (hours != null || minutes != null) {
+            if (hours != null && currentMinutes != null) {
+                return Pair(hours, currentMinutes).updateTime().formatTimeForUi()
+            }
+            if (minutes != null && currentHours != null) {
+                return Pair(currentHours, minutes).updateTime().formatTimeForUi()
+            }
+        }
+
+        return null
     }
 
     private fun fetchAlarm(id: Int?) {
@@ -212,7 +225,7 @@ class AlarmDetailsViewModel @Inject constructor(
             if (currentAlarm.hours != null && currentAlarm.minutes != null) {
                 val timeStamp = Pair(currentAlarm.hours, currentAlarm.minutes).getNextDateTime()
 
-                alarmsRepository.saveAlarm(
+                val id = alarmsRepository.saveAlarm(
                     id = currentAlarm.id,
                     desiredTimeHour = currentAlarm.hours,
                     desiredTimeMinute = currentAlarm.minutes,
@@ -222,10 +235,8 @@ class AlarmDetailsViewModel @Inject constructor(
                 )
 
                 setSystemAlarm(
-                    hours = currentAlarm.hours,
-                    minutes = currentAlarm.minutes,
-                    timeStamp = timeStamp,
-                    name = currentAlarm.name
+                    id = id,
+                    timeStamp = timeStamp
                 )
 
                 onAction(AlarmDetailsEvent.OnNavigateBack(save = true))
@@ -240,15 +251,13 @@ class AlarmDetailsViewModel @Inject constructor(
             val minute = uiState.value.alarmDetails.minutes
 
             if (save) {
-                if (hour != null && minute != null) {
+                if (hour != null && minute != null && id != null) {
                     setSystemAlarm(
-                        hours = hour,
-                        minutes = minute,
+                        id = id,
                         timeStamp = Pair(
                             hour,
                             minute
-                        ).getNextDateTime(),
-                        name = _uiState.value.alarmDetails.name
+                        ).getNextDateTime()
                     )
                 }
             } else if (id != null) {
@@ -257,15 +266,13 @@ class AlarmDetailsViewModel @Inject constructor(
                         id = id
                     )
 
-                if (oldAlarm != null) {
+                if (oldAlarm != null && oldAlarm.id != null) {
                     setSystemAlarm(
-                        hours = oldAlarm.desiredTimeHour,
-                        minutes = oldAlarm.desiredTimeMinute,
+                        id = oldAlarm.id!!,
                         timeStamp = Pair(
                             oldAlarm.desiredTimeHour,
                             oldAlarm.desiredTimeMinute
-                        ).getNextDateTime(),
-                        name = _uiState.value.alarmDetails.name
+                        ).getNextDateTime()
                     )
                 }
             }
@@ -274,24 +281,20 @@ class AlarmDetailsViewModel @Inject constructor(
         }
     }
 
-    private fun setSystemAlarm(hours: Int, minutes: Int, timeStamp: LocalDateTime, name: String?) {
+    private fun setSystemAlarm(id: Int, timeStamp: LocalDateTime) {
         viewModelScope.launch {
             systemAlarmRepository.setAlarm(
-                hour = hours,
-                minute = minutes,
-                timeStamp = timeStamp,
-                name = name
+                id = id,
+                timeStamp = timeStamp
             )
         }
     }
 
-    private fun cancelSystemAlarm(hour: Int, minute: Int, timeStamp: LocalDateTime, name: String?) {
+    private fun cancelSystemAlarm(id: Int, timeStamp: LocalDateTime) {
         viewModelScope.launch {
             systemAlarmRepository.cancelAlarm(
-                hour = hour,
-                minute = minute,
+                id = id,
                 timeStamp = timeStamp,
-                name = name
             )
         }
     }

@@ -3,6 +3,8 @@ package com.frokanic.snoozeloo.allalarms
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.frokanic.snoozeloo.formatTimeForUi
+import com.frokanic.snoozeloo.getNextDateTime
+import com.frokanic.snoozeloo.orFalse
 import com.frokanic.snoozeloo.repository.AlarmsRepository
 import com.frokanic.snoozeloo.repository.SystemAlarmRepository
 import com.frokanic.snoozeloo.toFormattedTimePair
@@ -72,6 +74,7 @@ class AllAlarmsViewModel @Inject constructor(
                             time = formattedTime,
                             period = period,
                             isActive = userAlarm.isActive,
+                            timeStamp = userAlarm.timeStamp,
                             timeTillNextAlarm = Pair(userAlarm.desiredTimeHour, userAlarm.desiredTimeMinute)
                                 .updateTime()
                                 .formatTimeForUi(),
@@ -114,9 +117,9 @@ class AllAlarmsViewModel @Inject constructor(
     private fun updateAlarmActiveStatus(id: Int?) {
         if (id != null) {
             viewModelScope.launch {
-                val alarmItemStatus = _uiState.value.alarmDetails.find { it.id == id }?.isActive
+                val alarmItemStatus = _uiState.value.alarmDetails.find { it.id == id }?.isActive.orFalse()
 
-                if (alarmItemStatus == false) {
+                if (alarmItemStatus) {
                     cancelSystemAlarm(id = id)
                 } else {
                     setSystemAlarm(id = id)
@@ -188,35 +191,53 @@ class AllAlarmsViewModel @Inject constructor(
     private suspend fun setSystemAlarm(id: Int) {
         val alarmItem = _uiState.value.alarmDetails.find { it.id == id }
 
-        val hour = alarmItem?.hours
-        val minute = alarmItem?.minutes
         val timeStamp = alarmItem?.timeStamp
-        val name = alarmItem?.name
 
-        if (hour != null && minute != null && timeStamp != null) {
-            systemAlarmRepository.setAlarm(
-                hour = hour,
-                minute = minute,
-                timeStamp = timeStamp,
-                name = name
+        if (timeStamp?.isBefore(LocalDateTime.now()).orFalse() && alarmItem?.hours != null && alarmItem.minutes != null) {
+
+//            systemAlarmRepository.setAlarm(
+//                id = id,
+//                timeStamp = timeStamp//.plus(ADD 24 HOURS)
+//            )
+            val newTimeStamp = Pair(alarmItem.hours, alarmItem.minutes).getNextDateTime()
+
+//            alarmsRepository.saveAlarm(
+//                id = alarmItem.id,
+//                desiredTimeHour = TODO(),
+//                desiredTimeMinute = TODO(),
+//                timeStamp = TODO(),
+//                name = TODO(),
+//                isActive = TODO()
+//            )
+
+            alarmsRepository.updateTimeStamp(
+                id = id,
+                timeStamp = newTimeStamp
             )
+
+            systemAlarmRepository.setAlarm(
+                id = id,
+                timeStamp = newTimeStamp
+            )
+        } else {
+            if (timeStamp != null) {
+                systemAlarmRepository.setAlarm(
+                    id = id,
+                    timeStamp = timeStamp
+                )
+            }
         }
     }
 
     private suspend fun cancelSystemAlarm(id: Int) {
         val alarmItem = _uiState.value.alarmDetails.find { it.id == id }
 
-        val hour = alarmItem?.hours
-        val minute = alarmItem?.minutes
         val timeStamp = alarmItem?.timeStamp
-        val name = alarmItem?.name
 
-        if (hour != null && minute != null && timeStamp != null) {
+        if (timeStamp != null) {
             systemAlarmRepository.cancelAlarm(
-                hour = hour,
-                minute = minute,
-                timeStamp = timeStamp,
-                name = name
+                id = id,
+                timeStamp = timeStamp
             )
         }
     }
