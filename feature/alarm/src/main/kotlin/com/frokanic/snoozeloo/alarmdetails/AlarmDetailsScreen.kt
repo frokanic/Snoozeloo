@@ -64,10 +64,7 @@ private fun AlarmDetailsScreen(
     state: AlarmDetailsUiData,
     onAction: (AlarmDetailsEvent) -> Unit
 ) {
-    if (state.isLoading) {
-        // Todo evaluate if any kind of management is merited.
-    } else {
-        
+    if (!state.isLoading) {
         if (state.alarmDetails.displayNameDialog) {
             NameDialog(
                 modifier = Modifier

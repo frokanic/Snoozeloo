@@ -68,9 +68,7 @@ private fun AllAlarmsScreen(
     state: AllAlarmsUiData,
     onAction: (AllAlarmsEvent) -> Unit
 ) {
-    if (state.isLoading) {
-        // Todo evaluate if any kind of management is merited.
-    } else {
+    if (!state.isLoading) {
         if (state.deleteAlarmDialogStatus.status) {
             DeleteAlarmDialog(
                 modifier = Modifier
