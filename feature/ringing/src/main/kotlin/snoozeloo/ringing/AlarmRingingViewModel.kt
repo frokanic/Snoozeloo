@@ -67,8 +67,8 @@ class AlarmRingingViewModel @Inject constructor(
                             timeStamp = alarm.timeStamp
                         )
 
-                    ringtoneRepository.play()
-                    vibrationRepository.vibrate()
+//                    ringtoneRepository.play()
+//                    vibrationRepository.vibrate()
                 }
             }
         }
@@ -78,8 +78,8 @@ class AlarmRingingViewModel @Inject constructor(
         viewModelScope.launch {
             _uiEvent.emit(AlarmRingingEvent.TurnOff)
 
-            ringtoneRepository.stop()
-            vibrationRepository.stop()
+//            ringtoneRepository.stop()
+//            vibrationRepository.stop()
         }
     }
 

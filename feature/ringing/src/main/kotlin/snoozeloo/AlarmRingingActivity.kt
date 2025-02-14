@@ -52,6 +52,12 @@ class AlarmRingingActivity : ComponentActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        stopService(Intent(this, AlarmService::class.java))
+    }
 }
 
 @Serializable
