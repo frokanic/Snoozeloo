@@ -102,3 +102,23 @@ private fun NameDialogPreview() {
         onClose = {  },
     )
 }
+
+@Preview
+@Composable
+private fun NameDialogFilledPreview() {
+    NameDialog(
+        name = "Name Example",
+        onUpdateName = {  },
+        onClose = {  },
+    )
+}
+
+@Preview
+@Composable
+private fun NameDialogOverfilledPreview() {
+    NameDialog(
+        name = "Name Example That is Filled With not Really meaningfull text but text nontheless",
+        onUpdateName = {  },
+        onClose = {  },
+    )
+}
