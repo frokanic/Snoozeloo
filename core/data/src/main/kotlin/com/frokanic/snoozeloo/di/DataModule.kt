@@ -23,7 +23,6 @@ import javax.inject.Singleton
 object DataModule {
 
     @Provides
-//    @Singleton
     fun provideAlarmsRepository(
         dao: AlarmDao
     ): AlarmsRepository =

@@ -194,21 +194,7 @@ class AllAlarmsViewModel @Inject constructor(
         val timeStamp = alarmItem?.timeStamp
 
         if (timeStamp?.isBefore(LocalDateTime.now()).orFalse() && alarmItem?.hours != null && alarmItem.minutes != null) {
-
-//            systemAlarmRepository.setAlarm(
-//                id = id,
-//                timeStamp = timeStamp//.plus(ADD 24 HOURS)
-//            )
             val newTimeStamp = Pair(alarmItem.hours, alarmItem.minutes).getNextDateTime()
-
-//            alarmsRepository.saveAlarm(
-//                id = alarmItem.id,
-//                desiredTimeHour = TODO(),
-//                desiredTimeMinute = TODO(),
-//                timeStamp = TODO(),
-//                name = TODO(),
-//                isActive = TODO()
-//            )
 
             alarmsRepository.updateTimeStamp(
                 id = id,
