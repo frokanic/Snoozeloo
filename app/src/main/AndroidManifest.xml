@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
     <uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
 
     <application
         android:name=".SnoozelooApp"
@@ -55,6 +57,11 @@
                 <action android:name="com.frokanic.snoozeloo.ACTION_MY_ALARM" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="snoozeloo.AlarmService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
     </application>
 
 </manifest>
